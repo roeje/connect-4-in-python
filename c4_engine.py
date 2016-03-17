@@ -56,24 +56,70 @@ class Game:
 		for row in range(self.height):	
 			for cell in range(self.width - (self.row_len - 1)):				
 				series = 0
-				for i in range(self.row_len):
-					if (self.board[row][cell] != -1 and self.board[row][cell] != self.board[row][cell + i]):
-						 series += 1					
+				for i in range(1, self.row_len):
+					if (self.board[row][cell] != -1 and self.board[row][cell] == self.board[row][cell + i]):
+						 series += 1	
+					else:
+						break				
 				if (series == (self.row_len - 1)):
 					return self.board[row][cell]
 		return -1		
 
 	def check_ver (self):
-		for row in range(self.height):
-			print row
-			for cell in range(self.width - (self.row_len - 1)):
-				print cell
+		for row in range(self.height):			
+			for cell in range(self.width - (self.row_len - 1)):				
 				series = 0
-				for i in range(self.row_len):
-					if (self.board[row][cell] != -1 and self.board[row][cell] != self.board[row][cell + i]):
-						 series += 1					
+				for i in range(1, self.row_len):
+					if (self.board[row][cell] != -1 and self.board[row][cell] == self.board[row + i][cell]):
+						 series += 1	
+					else:
+						break				
 				if (series == (self.row_len - 1)):
 					return self.board[row][cell]
 		return -1			
 
-	
+	def check_diag_right (self):
+		print "length to win"
+		print self.row_len
+		for row in range(self.height - (self.row_len - 1)):	
+			# print row		
+			for cell in range(self.width - (self.row_len - 1)):	
+				# print cell			
+				series = 0
+				for i in range(1, self.row_len):					
+					# print self.board[row + i][cell + i]
+					if (self.board[row][cell] != -1 and self.board[row][cell] == self.board[row + i][cell + i]):
+						 series += 1
+					else:
+						break
+				# print "Series"	
+				# print series				
+				if (series == (self.row_len - 1)):
+					print "Winner"
+					return self.board[row][cell]
+		return -1	
+
+	def check_diag_left (self):
+		print "length to win"
+		print self.row_len
+		for row in range(self.height - (self.row_len - 1)):	
+			# print row		
+			for cell in reversed(range(self.row_len - 2, self.width - 1)):	
+				# print cell			
+				series = 0
+				for i in range(1, self.row_len):					
+					# print self.board[row + i][cell + i]
+					if (self.board[row][cell] != -1 and self.board[row][cell] == self.board[row + i][cell - i]):
+						 series += 1
+					else:
+						break
+				# print "Series"	
+				# print series				
+				if (series == (self.row_len - 1)):
+					print "Winner"
+					return self.board[row][cell]
+		return -1	
+
+
+	def winner (self):
+		return 1
