@@ -2,17 +2,17 @@
 
 class Game:	
 
-	board = 0
-	height = 0
-	width = 0
-	row_len = 0
+	# board = 0
+	# height = 0
+	# width = 0
+	# row_len = 0
 
 	def __init__ ( self, height, width, row_len ):
-		Game.height = height
-		Game.width = width
-		Game.row_len = row_len	
+		self.height = height
+		self.width = width
+		self.row_len = row_len	
 		b = lambda h, w: [[-1] * w for i in range(h)]		
-		Game.board = b(height, width)
+		self.board = b(height, width)
 
 	def print_formated (self):
 		# x = lambda b: for row in b: print row		
@@ -51,3 +51,29 @@ class Game:
 		else:
 			self.board[open_row][col] = player
 			return True
+
+	def check_hor (self):
+		for row in range(self.height):	
+			for cell in range(self.width - (self.row_len - 1)):				
+				series = 0
+				for i in range(self.row_len):
+					if (self.board[row][cell] != -1 and self.board[row][cell] != self.board[row][cell + i]):
+						 series += 1					
+				if (series == (self.row_len - 1)):
+					return self.board[row][cell]
+		return -1		
+
+	def check_ver (self):
+		for row in range(self.height):
+			print row
+			for cell in range(self.width - (self.row_len - 1)):
+				print cell
+				series = 0
+				for i in range(self.row_len):
+					if (self.board[row][cell] != -1 and self.board[row][cell] != self.board[row][cell + i]):
+						 series += 1					
+				if (series == (self.row_len - 1)):
+					return self.board[row][cell]
+		return -1			
+
+	
