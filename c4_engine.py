@@ -2,17 +2,18 @@
 
 class Game:	
 
-	board = 0
-	height = 0
-	width = 0
-	row_len = 0
+	# board = 0
+	# height = 0
+	# width = 0
+	# row_len = 0
 
 	def __init__ ( self, height, width, row_len ):
-		Game.height = height
-		Game.width = width
-		Game.row_len = row_len	
+		self.height = height
+		self.width = width
+		self.row_len = row_len	
 		b = lambda h, w: [[-1] * w for i in range(h)]		
-		Game.board = b(height, width)
+		self.board = b(height, width)
+		self.winner = -1
 
 	def print_formated (self):
 		# x = lambda b: for row in b: print row		
@@ -53,16 +54,81 @@ class Game:
 			return True
 
 	def check_hor (self):
-		for row in range(self.height):
-			for cell in range(self.width - (self.row_len - 1)):
+		for row in range(self.height):	
+			for cell in range(self.width - (self.row_len - 1)):				
 				series = 0
-				for i in range(self.row_len):					
-					if (self.board[row][cell] == -1):
+				for i in range(1, self.row_len):
+					if (self.board[row][cell] != -1 and self.board[row][cell] == self.board[row][cell + i]):
+						 series += 1	
+					else:
+						break				
+				if (series == (self.row_len - 1)):
+					self.winner = self.board[row][cell]
+					return True
+		return False		
+
+	def check_ver (self):
+		for row in range(self.height):			
+			for cell in range(self.width - (self.row_len - 1)):				
+				series = 0
+				for i in range(1, self.row_len):
+					if (self.board[row][cell] != -1 and self.board[row][cell] == self.board[row + i][cell]):
+						 series += 1	
+					else:
+						break				
+				if (series == (self.row_len - 1)):
+					self.winner = self.board[row][cell]
+					return True
+		return False			
+
+	def check_diag_right (self):
+		print "length to win"
+		print self.row_len
+		for row in range(self.height - (self.row_len - 1)):	
+			# print row		
+			for cell in range(self.width - (self.row_len - 1)):	
+				# print cell			
+				series = 0
+				for i in range(1, self.row_len):					
+					# print self.board[row + i][cell + i]
+					if (self.board[row][cell] != -1 and self.board[row][cell] == self.board[row + i][cell + i]):
+						 series += 1
+					else:
 						break
-					elif (self.board[row][cell] != self.board[row][cell + i]):
+				# print "Series"	
+				# print series				
+				if (series == (self.row_len - 1)):
+					print "Winner"
+					self.winner = self.board[row][cell]
+					return True
+		return False
+
+	def check_diag_left (self):
+		print "length to win"
+		print self.row_len
+		for row in range(self.height - (self.row_len - 1)):	
+			# print row		
+			for cell in reversed(range(self.row_len - 2, self.width - 1)):	
+				# print cell			
+				series = 0
+				for i in range(1, self.row_len):					
+					# print self.board[row + i][cell + i]
+					if (self.board[row][cell] != -1 and self.board[row][cell] == self.board[row + i][cell - i]):
+						 series += 1
+					else:
 						break
-					series += 1
-				if (series == (row_len - 1)):
-					return self.board[row][cell]
-				else:
-					return -1
+				# print "Series"	
+				# print series				
+				if (series == (self.row_len - 1)):
+					print "Winner"
+					self.winner = self.board[row][cell]
+					return True
+		return False
+
+	def winner (self):
+		if (self.check_ver() || self.check_hor() || self.check_diag_left() || self.check_diag_right()):
+			return self.winner
+		if (self.check_full_board()):
+			return -5
+		return -1
+
