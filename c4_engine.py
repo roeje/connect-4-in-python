@@ -79,54 +79,38 @@ class Game:
 				if (series == (self.row_len - 1)):
 					self.winner = self.board[row][cell]
 					return True
-		return False			
+		return False
 
-	def check_diag_right (self):
-		print "length to win"
-		print self.row_len
-		for row in range(self.height - (self.row_len - 1)):	
-			# print row		
-			for cell in range(self.width - (self.row_len - 1)):	
-				# print cell			
+	def check_diag_right (self):	
+		for row in range(self.height - (self.row_len - 1)):			
+			for cell in range(self.width - (self.row_len - 1)):			
 				series = 0
 				for i in range(1, self.row_len):					
-					# print self.board[row + i][cell + i]
 					if (self.board[row][cell] != -1 and self.board[row][cell] == self.board[row + i][cell + i]):
 						 series += 1
 					else:
-						break
-				# print "Series"	
-				# print series				
-				if (series == (self.row_len - 1)):
-					print "Winner"
+						break						
+				if (series == (self.row_len - 1)):					
 					self.winner = self.board[row][cell]
 					return True
 		return False
 
-	def check_diag_left (self):
-		print "length to win"
-		print self.row_len
-		for row in range(self.height - (self.row_len - 1)):	
-			# print row		
-			for cell in reversed(range(self.row_len - 2, self.width - 1)):	
-				# print cell			
+	def check_diag_left (self):		
+		for row in range(self.height - (self.row_len - 1)):			
+			for cell in reversed(range(self.row_len - 2, self.width - 1)):					
 				series = 0
 				for i in range(1, self.row_len):					
-					# print self.board[row + i][cell + i]
 					if (self.board[row][cell] != -1 and self.board[row][cell] == self.board[row + i][cell - i]):
 						 series += 1
 					else:
-						break
-				# print "Series"	
-				# print series				
-				if (series == (self.row_len - 1)):
-					print "Winner"
+						break								
+				if (series == (self.row_len - 1)):					
 					self.winner = self.board[row][cell]
 					return True
 		return False
 
-	def winner (self):
-		if (self.check_ver() || self.check_hor() || self.check_diag_left() || self.check_diag_right()):
+	def check_winner (self):
+		if (self.check_ver() or self.check_hor() or self.check_diag_left() or self.check_diag_right()):
 			return self.winner
 		if (self.check_full_board()):
 			return -5
