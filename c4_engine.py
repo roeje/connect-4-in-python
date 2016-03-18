@@ -51,3 +51,18 @@ class Game:
 		else:
 			self.board[open_row][col] = player
 			return True
+
+	def check_hor (self):
+		for row in range(self.height):
+			for cell in range(self.width - (self.row_len - 1)):
+				series = 0
+				for i in range(self.row_len):					
+					if (self.board[row][cell] == -1):
+						break
+					elif (self.board[row][cell] != self.board[row][cell + i]):
+						break
+					series += 1
+				if (series == (row_len - 1)):
+					return self.board[row][cell]
+				else:
+					return -1

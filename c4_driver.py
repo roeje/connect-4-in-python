@@ -16,7 +16,8 @@ print g1.place_token(1, 2)
 
 print g1.place_token(1, 7)
 
-
+print "Testing Hor:"
+print g1.check_hor()
 
 print type(g1.board)
 
