@@ -13,6 +13,7 @@ class Game:
 		self.row_len = row_len	
 		b = lambda h, w: [[-1] * w for i in range(h)]		
 		self.board = b(height, width)
+		self.winner = -1
 
 	def print_formated (self):
 		# x = lambda b: for row in b: print row		
@@ -62,8 +63,9 @@ class Game:
 					else:
 						break				
 				if (series == (self.row_len - 1)):
-					return self.board[row][cell]
-		return -1		
+					self.winner = self.board[row][cell]
+					return True
+		return False		
 
 	def check_ver (self):
 		for row in range(self.height):			
@@ -75,8 +77,9 @@ class Game:
 					else:
 						break				
 				if (series == (self.row_len - 1)):
-					return self.board[row][cell]
-		return -1			
+					self.winner = self.board[row][cell]
+					return True
+		return False			
 
 	def check_diag_right (self):
 		print "length to win"
@@ -96,8 +99,9 @@ class Game:
 				# print series				
 				if (series == (self.row_len - 1)):
 					print "Winner"
-					return self.board[row][cell]
-		return -1	
+					self.winner = self.board[row][cell]
+					return True
+		return False
 
 	def check_diag_left (self):
 		print "length to win"
@@ -117,9 +121,13 @@ class Game:
 				# print series				
 				if (series == (self.row_len - 1)):
 					print "Winner"
-					return self.board[row][cell]
-		return -1	
-
+					self.winner = self.board[row][cell]
+					return True
+		return False
 
 	def winner (self):
-		return 1
+		if (self.check_ver() || self.check_hor() || self.check_diag_left() || self.check_diag_right()):
+			return self.winner
+		if (self.check_full_board()):
+			return -5
+		return -1
