@@ -1,55 +1,148 @@
-g1 = Game(6, 8, 3)
-g1.board[0][0] = 1
-g1.board[0][1] = 0
-g1.board[1][1] = 0
-g1.board[2][1] = 0
-# g1.board[3][1] = 1
-# g1.board[4][1] = 1
-# g1.board[5][1] = 1
-
-# print g1.place_token(1, 1)
-# print g1.place_token(1, 2)
-# print g1.place_token(1, 7)
-# print g1.place_token(1, 0)
-# print g1.place_token(1, 0)
-# print g1.place_token(1, 2)
-# print g1.place_token(1, 2)
-# print g1.place_token(1, 2)
-
-print "checking for the height of col 1"
-print g1.check_for_col_height(1)
-
-print "checking for full board"
-print g1.check_full_board()
-
-print "Testing Hor:"
-print g1.check_hor()
-print "Testing Vert:"
-print g1.check_ver()
-print "Testing Diag Right"
-print g1.check_diag_right()
-print "Testing Diag Left"
-print g1.check_diag_left()
-
-print "checking winner"
-print g1.check_winner()
-
-print type(g1.board)
-
-g1.print_formated()
+from c4_engine import *
+from c4_io import *
+import unittest
 
 
-print "Testing IO:"
+class TestGame(unittest.TestCase):
 
-io = IO()
+# Testing Horizontal
+	def test_win_hor_01 (self):
+		g1 = Game(7, 8, 4)
+		g1.board[0][0] = 0
+		g1.board[0][1] = 0
+		g1.board[0][2] = 0
+		g1.board[0][3] = 0
+		answer = g1.check_winner()
+		self.assertEqual(answer, 0)
 
-io.save_obj(g1, "testFile.txt", "w")
+	def test_win_hor_top (self):
+		g1 = Game(6, 6, 5)
+		num_rows = 6
+		g1.board[num_rows - 1][0] = 0;
+		g1.board[num_rows - 1][1] = 0;
+		g1.board[num_rows - 1][2] = 0;
+		g1.board[num_rows - 1][3] = 0;
+		g1.board[num_rows - 1][4] = 0;
+		answer = g1.check_winner()
+		self.assertEqual(answer, 0)
 
-g2 = io.load_obj("testFile.txt")
+	def test_win_hor_top_full (self):
+		g1 = Game(5, 5, 5)
+		num_rows = 5
+		g1.board[num_rows - 1][0] = 1;
+		g1.board[num_rows - 1][1] = 1;
+		g1.board[num_rows - 1][2] = 1;
+		g1.board[num_rows - 1][3] = 1;
+		g1.board[num_rows - 1][4] = 1;
+		answer = g1.check_winner()
+		self.assertEqual(answer, 1)
 
-print g2
+	def test_win_hor_top_fail (self):
+		g1 = Game(5, 5, 5)
+		num_rows = 5
+		g1.board[num_rows - 1][0] = 1;
+		g1.board[num_rows - 1][1] = 1;
+		g1.board[num_rows - 1][2] = 1;
+		g1.board[num_rows - 1][3] = 1;				
+		answer = g1.check_winner()
+		self.assertEqual(answer, -1)
 
-g2.print_formated()
+	def test_win_hor_top_overload (self):
+		g1 = Game(5, 5, 2)
+		num_rows = 5
+		g1.board[num_rows - 1][0] = 1;
+		g1.board[num_rows - 1][1] = 1;
+		g1.board[num_rows - 1][2] = 1;
+		g1.board[num_rows - 1][3] = 1;				
+		answer = g1.check_winner()
+		self.assertEqual(answer, 1)
+
+	def test_win_hor_top_double (self):
+		g1 = Game(20, 20, 2)
+		num_rows = 20
+		g1.board[0][num_rows - 1] = 1;		
+		g1.board[0][num_rows - 2] = 1;			
+		answer = g1.check_winner()
+		self.assertEqual(answer, 1)
+
+	def test_win_hor_top_single_fail (self):
+		g1 = Game(5, 5, 1)
+		num_rows = 5
+		g1.board[2][3] = 1;					
+		answer = g1.check_winner()
+		self.assertEqual(answer, -1)
+
+# Testing Vertical
+	def test_win_vert_right_full (self):
+		g1 = Game(6, 6, 6)
+		num_columns = 6
+		g1.board[0][num_columns - 1] = 0;  
+		g1.board[1][num_columns - 1] = 0;
+		g1.board[2][num_columns - 1] = 0;
+		g1.board[3][num_columns - 1] = 0;
+		g1.board[4][num_columns - 1] = 0;
+		g1.board[5][num_columns - 1] = 0; 					
+		answer = g1.check_winner()
+		self.assertEqual(answer, 0)
+
+	def test_win_vert_mid (self):
+		g1 = Game(6, 6, 3)
+		num_columns = 6		
+		g1.board[2][num_columns - 4] = 0;
+		g1.board[3][num_columns - 4] = 0;
+		g1.board[4][num_columns - 4] = 0;
+		g1.board[5][num_columns - 4] = 0; 					
+		answer = g1.check_winner()
+		self.assertEqual(answer, 0)
+
+	def test_win_vert_right_double (self):
+		g1 = Game(6, 6, 2)
+		num_columns = 6
+		g1.board[0][0] = 0;  
+		g1.board[1][0] = 0;							
+		answer = g1.check_winner()
+		self.assertEqual(answer, 0)
 
 
-print test
+# Testing Right Diag
+	def test_win_rightdiag_double (self):
+		g1 = Game(4, 4, 2)
+		num_rows = 4
+		g1.board[2][2] = 1	
+		g1.board[3][3] = 1				
+		answer = g1.check_winner()
+		self.assertEqual(answer, 1)
+
+	def test_win_rightdiag_top_right (self):
+		g1 = Game(7, 7, 5)
+		num_rows = 7
+		g1.board[2][2] = 0;
+		g1.board[3][3] = 0;
+		g1.board[4][4] = 0; 
+		g1.board[5][5] = 0; 
+		g1.board[6][6] = 0;   			
+		answer = g1.check_winner()
+		self.assertEqual(answer, 0)
+
+# Testing Left Diag
+	def test_win_leftdiag_full (self):
+		g1 = Game(4, 4, 4)
+		num_rows = 4
+		g1.board[num_rows - 1][0] = 1;
+		g1.board[num_rows - 2][1] = 1;
+		g1.board[num_rows - 3][2] = 1;   
+		g1.board[num_rows - 4][3] = 1;  					
+		answer = g1.check_winner()
+		self.assertEqual(answer, 1)
+
+	def test_win_leftdiag_double (self):
+		g1 = Game(7, 7, 2)
+		num_rows = 7
+		g1.board[num_rows - 1][0] = 0;
+		g1.board[num_rows - 2][1] = 0;  					
+		answer = g1.check_winner()
+		self.assertEqual(answer, 0)
+
+
+if __name__ == '__main__':
+	unittest.main()
