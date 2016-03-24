@@ -1,5 +1,4 @@
-from c4_engine import *
-from c4_io import *
+from c4_lib import c4_io, c4_engine
 import getopt
 import sys
 import re
@@ -13,7 +12,7 @@ def main (argv) :
 	width = 0
 	win_len = 0
 	load_game = False
-	io = IO()
+	io = c4_io.IO()
 	player = 0;	
 
 	# Parse parameters from command line
@@ -69,7 +68,7 @@ def main (argv) :
 		sys.exit(2)
 
 	# Create new game object based on parameters
-	game = Game(height, width, win_len)
+	game = c4_engine.Game(height, width, win_len)
 
 	# Begining Game
 	print "***** Starting Connect 4: *****\n"	
