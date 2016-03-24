@@ -8,6 +8,8 @@ class Game:
 		self.height = height
 		self.width = width
 		self.row_len = row_len	
+
+		# lambda function used to generate the game board
 		b = lambda h, w: [[-1] * w for i in range(h)]		
 		self.board = b(height, width)
 		self.winner = -1
