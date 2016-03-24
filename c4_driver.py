@@ -1,57 +1,153 @@
 from c4_engine import *
 from c4_io import *
+import getopt
+import sys
+import re
 
-g1 = Game(6, 8, 3)
-g1.board[0][0] = 1
-g1.board[0][1] = 0
-g1.board[1][1] = 0
-g1.board[2][1] = 0
-# g1.board[3][1] = 1
-# g1.board[4][1] = 1
-# g1.board[5][1] = 1
+# Main method that implements the terminal interface to play game
+def main (argv) :
 
-# print g1.place_token(1, 1)
-# print g1.place_token(1, 2)
-# print g1.place_token(1, 7)
-# print g1.place_token(1, 0)
-# print g1.place_token(1, 0)
-# print g1.place_token(1, 2)
-# print g1.place_token(1, 2)
-# print g1.place_token(1, 2)
+	height = 0
+	width = 0
+	win_len = 0
+	load_game = False
+	io = IO()
+	player = 0;	
 
-print "checking for the height of col 1"
-print g1.check_for_col_height(1)
+	# Parse parameters from command line
+	try:
+		# h = height, w = width, r = length to win, l is flag for automatic load
+		opts, args = getopt.getopt(argv, "h:w:r:l")
+	except getopt.GetoptError:
+		print "Parameters were missing. Please provide: -h height, -w width, -r row length. Add -l if you would like to load a saved game"
+		sys.exit(2)
+	for opt, arg in opts:
+		if opt == '-h':
+			height = arg
+		elif opt == "-w":
+			width = arg
+		elif opt == "-r":
+			win_len = arg
+		elif opt == "-l":
+			load_game = True	
 
-print "checking for full board"
-print g1.check_full_board()
+	# Error check for all parameters
+	try:
+		if height.isdigit() and width.isdigit() and win_len.isdigit():
+			height = int(height)
+			width = int(width)
+			win_len = int(win_len)
+		else:
+			raise ValueError("An input was not in integer format. Please make sure your inputs are numbers.")
 
-print "Testing Hor:"
-print g1.check_hor()
-print "Testing Vert:"
-print g1.check_ver()
-print "Testing Diag Right"
-print g1.check_diag_right()
-print "Testing Diag Left"
-print g1.check_diag_left()
+	except ValueError as e:
+		print e
+		sys.exit(2)
+	except AttributeError as e:
+		print "You did not specify any parameter. Please try again."
+		print e
+		sys.exit(2)
 
-print "checking winner"
-print g1.check_winner()
+	try:
+		if height >= 2 and width >= 2:
+			print
+		else:
+			raise ValueError("The parameters you enter are too small. Please enter a hight and with greater than 2.")
+	except ValueError as e:
+		print e
+		sys.exit(2)
 
-print type(g1.board)
+	try:
+		if win_len > 0:
+			print			
+		else:
+			raise ValueError("Your length to win was too small. Please enter an winning length greater than 0")
+	except ValueError as e:
+		print e;
+		sys.exit(2)
 
-g1.print_formated()
+	# Create new game object based on parameters
+	game = Game(height, width, win_len)
+
+	# Begining Game
+	print "***** Starting Connect 4: *****\n"	
+
+	# Check for loadgame conditions
+	if not load_game:
+		print "Would you like to try to load a previous game?"
+		answer = raw_input("yes or no: ")
+	else:
+		answer = ""
+
+	if answer.lower() == "yes" or load_game:
+		print "Checking for previous game..."
+		result = io.load_obj("game.txt")
+		if result:
+			game = result
+			print "Board Loaded!"
+		else:
+			print "Game could not be loaded. Starting a new game..."
 
 
-print "Testing IO:"
+	print "*****************************************"
+	print "Player " + str(player) + "s Turn:"
 
-io = IO()
+	game.print_formated()		
 
-io.save_obj(g1, "testFile.txt", "w")
+	# Start the game loop.
+	while(1):
+		print "Enter Column # to Place Token or type save to Save your current game:"
+		pos = raw_input("Col # or save: ")
+		if pos.lower() == "save":
+			print "Saving game..."
+			if io.save_obj(game, "game.txt", "w"):
+				print "Game Saved Successfully!"
+				continue
+			else:
+				print "An error occured, Please try Again"
+				continue
 
-g2 = io.load_obj("testFile.txt")
+		# Check for valid col input
+		try:			
+			if pos.isdigit() and int(pos) >= 0 and int(pos) < width:
+				pos = int(pos);					
+			else:				
+				print "The Column you entered is invalid. Please try again."
+				continue	
+		except AttributeError as e:
+			print "You did not specify a number parameter. Please try again."
+			print e
+			sys.exit(2)
 
-print g2
+		# Check place token returns false, the col is full
+		if not game.place_token(player, pos):
+			print "This column is already full. Try again."
+			continue
 
-g2.print_formated()
+		print "**********************"
+		print "    Board Updated     "
+		print "**********************"
+		game.print_formated()
+		print "\n"
 
+		# Check for full board at the end of every insertion
+		if game.check_full_board():
+			print "This game is a tie. Thanks for playing!"
+			break
 
+		# Check winning conditions. Break out of game loop if winner is found
+		if game.check_winner() != -1:
+			print "Player " + str(game.check_winner()) + " has Won the game!. Thanks for playing!"
+			break
+
+		# Toggle player value at end of round
+		if player == 1:
+			player = 0
+		else:
+			player = 1
+
+		# Update the user with the current player
+		print "Player " + str(player) + "s turn..."
+
+if __name__ == "__main__":
+   main(sys.argv[1:])
